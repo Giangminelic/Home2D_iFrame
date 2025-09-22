@@ -48,13 +48,18 @@
     }
 
     .btn-light {
-      background: white;
+      background: rgb(218, 197, 182);
       color: #000;
     }
 
     .btn-go {
-      background: white;
+      background: rgb(193, 212, 227);
       color: #000;
+    }
+
+    .btn-pump {
+      background: #6281bf;
+      color: white;
     }
 
     .param-box {
@@ -123,6 +128,7 @@
     <div class="param-box gas">🔥 Gas: <span id="gas">--</span></div>
     <div class="param-box motion">🚶 Motion: <span id="motion">--</span></div>
     <div class="button-container">
+      <button class="btn-pump" id="pumpButton" onclick="togglePump()">Bật máy bơm</button>
       <button class="btn-go" onclick="goOutside()">Go Outside</button>
     </div>
   </div>
@@ -140,11 +146,13 @@
     const gas = document.getElementById("gas");
     const motion = document.getElementById("motion");
     const lightButton = document.getElementById("lightButton");
+    const pumpButton = document.getElementById("pumpButton");
     const outdoorImg = document.getElementById("outdoorImg");
 
     let configTemp, configHumi, configPress, configSoil, configOzone, configGas, configMotion, configLight;
-    let actionOn, actionOff;
+    let actionOn, actionOff, actionPumpOn, actionPumpOff;
     let statusLed = 0;
+    let statusPump = 0;
 
     eraWidget.init({
       onConfiguration: (configuration) => {
@@ -158,6 +166,8 @@
         configLight = configuration.realtime_configs[7];
         actionOn = configuration.actions[0];
         actionOff = configuration.actions[1];
+        actionPumpOn = configuration.actions[2];  // Bật máy bơm
+        actionPumpOff = configuration.actions[3]; // Tắt máy bơm
       },
 
       onValues: (values) => {
@@ -190,10 +200,10 @@
     function toggleLight() {
       if (statusLed) {
         outdoorImg.style.filter = "brightness(1)";
-        lightButton.textContent = "Turn Off Light";
+        lightButton.textContent = "Tắt đèn";
       } else {
         outdoorImg.style.filter = "brightness(0.2)";
-        lightButton.textContent = "Turn On Light";
+        lightButton.textContent = "Bật đèn";
       }
     }
 
@@ -202,6 +212,18 @@
         eraWidget.triggerAction(actionOn.action, null);
       } else {
         eraWidget.triggerAction(actionOff.action, null);
+      }
+    }
+
+    function togglePump() {
+      if (statusPump == 0) {
+        eraWidget.triggerAction(actionPumpOn.action, null);
+        pumpButton.textContent = "Tắt máy bơm";
+        statusPump = 1;
+      } else {
+        eraWidget.triggerAction(actionPumpOff.action, null);
+        pumpButton.textContent = "Bật máy bơm";
+        statusPump = 0;
       }
     }
 
