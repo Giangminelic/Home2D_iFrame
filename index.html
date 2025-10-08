@@ -154,6 +154,9 @@
     let statusLed = 0;
     let statusPump = 0;
 
+    eraWidget.ready();
+    mobileHeight(300);
+
     eraWidget.init({
       onConfiguration: (configuration) => {
         configTemp = configuration.realtime_configs[0];
